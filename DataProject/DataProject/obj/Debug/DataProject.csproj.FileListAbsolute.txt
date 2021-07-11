@@ -1,0 +1,28 @@
+C:\Users\Moham\Desktop\DataProject\DataProject\DataProject\bin\Debug\DataProject.exe.config
+C:\Users\Moham\Desktop\DataProject\DataProject\DataProject\obj\Debug\DataProject.Properties.Resources.resources
+C:\Users\Moham\Desktop\DataProject\DataProject\DataProject\obj\Debug\DataProject.csproj.GenerateResource.Cache
+C:\Users\Moham\Desktop\DataProject\DataProject\DataProject\bin\Debug\DataProject.exe
+C:\Users\Moham\Desktop\DataProject\DataProject\DataProject\bin\Debug\DataProject.pdb
+C:\Users\Moham\Desktop\DataProject\DataProject\DataProject\bin\Debug\FastColoredTextBox.dll
+C:\Users\Moham\Desktop\DataProject\DataProject\DataProject\bin\Debug\FastColoredTextBox.xml
+C:\Users\Moham\Desktop\DataProject\DataProject\DataProject\obj\Debug\DataProject.Form1.resources
+C:\Users\Moham\Desktop\DataProject\DataProject\DataProject\obj\Debug\DataProject.exe
+C:\Users\Moham\Desktop\DataProject\DataProject\DataProject\obj\Debug\DataProject.pdb
+C:\Users\Moham\Desktop\DataProject\DataProject\DataProject\obj\Debug\DataProject.csprojResolveAssemblyReference.cache
+C:\Users\Moham\Desktop\DataProject\DataProject\DataProject\bin\Debug\AboControls.exe
+C:\Users\Moham\Desktop\DataProject\DataProject\DataProject\bin\Debug\AxInterop.WMPLib.dll
+C:\Users\Moham\Desktop\DataProject\DataProject\DataProject\bin\Debug\Interop.WMPLib.dll
+C:\Users\Moham\Desktop\DataProject\DataProject\DataProject\bin\Debug\AboControls.pdb
+C:\Users\Moham\Desktop\New folder\DataProject\DataProject\DataProject\bin\Debug\DataProject.exe.config
+C:\Users\Moham\Desktop\New folder\DataProject\DataProject\DataProject\obj\Debug\DataProject.exe
+C:\Users\Moham\Desktop\New folder\DataProject\DataProject\DataProject\obj\Debug\DataProject.pdb
+C:\Users\Moham\Desktop\New folder\DataProject\DataProject\DataProject\bin\Debug\DataProject.exe
+C:\Users\Moham\Desktop\New folder\DataProject\DataProject\DataProject\bin\Debug\DataProject.pdb
+C:\Users\Moham\Desktop\New folder\DataProject\DataProject\DataProject\bin\Debug\AxInterop.WMPLib.dll
+C:\Users\Moham\Desktop\New folder\DataProject\DataProject\DataProject\bin\Debug\Interop.WMPLib.dll
+C:\Users\Moham\Desktop\New folder\DataProject\DataProject\DataProject\bin\Debug\AboControls.pdb
+C:\Users\Moham\Desktop\New folder\DataProject\DataProject\DataProject\bin\Debug\FastColoredTextBox.xml
+C:\Users\Moham\Desktop\New folder\DataProject\DataProject\DataProject\obj\Debug\DataProject.csprojResolveAssemblyReference.cache
+C:\Users\Moham\Desktop\New folder\DataProject\DataProject\DataProject\obj\Debug\DataProject.Form1.resources
+C:\Users\Moham\Desktop\New folder\DataProject\DataProject\DataProject\obj\Debug\DataProject.Properties.Resources.resources
+C:\Users\Moham\Desktop\New folder\DataProject\DataProject\DataProject\obj\Debug\DataProject.csproj.GenerateResource.Cache
