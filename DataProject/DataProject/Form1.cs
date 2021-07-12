@@ -10,6 +10,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FastColoredTextBoxNS;
+using System.Runtime.InteropServices;
 
 namespace DataProject
 {
@@ -20,21 +21,29 @@ namespace DataProject
     
     public partial class Form1 : Form
     {
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AllocConsole();
+
+
+
+
+
         Stack checking_stack = new Stack();
+        Stack leveling_stack = new Stack();
 
         private string FileName = string.Empty;
 
         int est = 0;
+
+        List<error_handler> error = new List<error_handler>();
 
         struct error_handler
         {
             public int line ,start,end;
 
         }
-
-       // error_handler[] error = new error_handler[4] ;
-        List<error_handler> error = new List<error_handler>();
-
 
         public void error_higliteer(int higlight)
         {
@@ -50,7 +59,6 @@ namespace DataProject
 
 
         }
-
 
         public Form1()
         {
@@ -179,11 +187,11 @@ namespace DataProject
 
         private void redToolStripMenuItem_Click(object sender, EventArgs e)
         {
-           
-
+            
+            leveling_stack.Clear();
             error.Clear();
             
-            int line = 0, start = 0, end = 0, error_num = 0, level = 0; ;
+            int line = 0, start = 0, end = 0  ;
             
 
             Range rng = new Range(editor, start, line,end, line);
@@ -208,22 +216,34 @@ namespace DataProject
                     if (line_text[j] == '<'  )
                     {
                         checking_stack.Push(line_text[j]);
-                        level += 1; 
+                        
+                        AllocConsole();
+
+
+                        if (line_text[1] !='!' && line_text[j+1] !='/' && line_text[1] != '?'&& line_text[j+1] != '!' && j + 1 < line_text.Length)
+                        {
+                            string s = line_text.Substring(1,  line_text.IndexOf('>')-1);
+                            if (s.Contains(" "))
+                            {
+                                s = s.Substring(0, s.IndexOf(' '));
+                            }
+
+                            leveling_stack.Push(s);
+                        }
+
                         if (j+1 < line_text.Length && line_text[j+1] == '!')
                         {
                             checking_stack.Pop();
-                            level -= 1;
                         }
-        
                     }
-
 
 
                     else if (line_text[j] == '>')
                     {
-                        if (checking_stack.Count != 0 && checking_stack.Peek().ToString() == "<")
+                        if (checking_stack.Count != 0 && checking_stack.Peek().ToString() == "<" && j - 1 > 0 && line_text[j - 1] != '-')
                         {
                             checking_stack.Pop();
+
                         }
 
                         else if (checking_stack.Count == 0 && j - 1 > 0 && line_text[j - 1] != '-')
@@ -234,56 +254,42 @@ namespace DataProject
                         else if (j == 0)
                         {
                             checking_stack.Push(line_text[j]);
-                        }
-                     
-                                                
-                    } 
-
-
+                        }                         
+                    }
                     
+                   
 
                 }
+               
+                if (line_text[0] != '<' && line_text[line_text.Length-2] !='-' )  { checking_stack.Push(line_text[0]);}
+
+                else if (line_text[line_text.Length - 1] != '>' && line_text[1] != '!' ){ checking_stack.Push(line_text[0]); }
+
 
                 if (checking_stack.Count != 0)
                 {
-
                     error_element = new error_handler { line = i, start = 0, end = editor.GetLineText(i).Length };
                     error.Add(error_element);   
-                    label1.Text = "Error Num : " + error.Count.ToString();
-
+                    
                 }
 
+                label1.Text = "Error Num : " + error.Count.ToString();
 
 
+            }
 
+            /*   if (line_text[0] != '<' || line_text[line_text.Length - 1] != '>')
+              {
+                  error_element = new error_handler { line = i, start = 0, end = line_text.Length };
+                  error.Add(error_element);
+                  error_num += 1;
+                  label1.Text = "Error Num : " + error_num.ToString();
+              } */
+            //MessageBox.Show(editor.GetLineText(i));
 
+            // editor.AppendText(editor.LinesCount.ToString());
 
-
-
-
-
-             /*   if (line_text[0] != '<' || line_text[line_text.Length - 1] != '>')
-                {
-
-
-
-                    error_element = new error_handler { line = i, start = 0, end = line_text.Length };
-                    error.Add(error_element);
-                    error_num += 1;
-                    label1.Text = "Error Num : " + error_num.ToString();
-
-                } */
-
-
-                //MessageBox.Show(editor.GetLineText(i));
-
-                        // editor.AppendText(editor.LinesCount.ToString());
-
-                        //editor.AppendText(editor.GetLineText(i));
-
-
-                }
-
+            //editor.AppendText(editor.GetLineText(i));
 
             /*
               if (editor.GetLineText(i)[0] != '<' || editor.GetLineText(i)[editor.GetLineText(i).Length-1] != '>')
@@ -291,11 +297,6 @@ namespace DataProject
                     editor.AppendText("error Found ");
                 }
              */
-
-
-
-
-
 
             // editor.AppendText((error[0].end).ToString());
             //  editor.AppendText(error.Count.ToString());
@@ -307,14 +308,12 @@ namespace DataProject
 
             //  editor.Selection = rng;
 
-
             // editor.SelectedText = "mohamed";
             // editor.BookmarkColor = Color.Red;
 
-
+          
 
         }
-
 
         private void editor_Load(object sender, EventArgs e)
         {
