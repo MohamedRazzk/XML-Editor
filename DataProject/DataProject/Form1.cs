@@ -32,12 +32,22 @@ namespace DataProject
 
         Stack checking_stack = new Stack();
         Stack leveling_stack = new Stack();
+        Stack level_error = new Stack();
 
         private string FileName = string.Empty;
 
         int est = 0;
 
         List<error_handler> error = new List<error_handler>();
+        List<line_handler> stack_error = new List<line_handler>();
+
+
+        struct line_handler
+        {
+            public int line;
+            public string word;
+
+        }
 
         struct error_handler
         {
@@ -190,27 +200,31 @@ namespace DataProject
             
             leveling_stack.Clear();
             error.Clear();
-            
+            string zero = null;
+
+
             int line = 0, start = 0, end = 0  ;
             
 
             Range rng = new Range(editor, start, line,end, line);
 
             var error_element = new error_handler { line=0 ,start = 0,end = 20 };
+            var line_element = new line_handler { line = 0 , word = null };
             //  error.Add(error_element);
 
 
 
 
-            for (int i =0; i < editor.LinesCount; i++)
-
-
-            {
+            for (int i = 0; i < editor.LinesCount; i++)
+                {
+     
                 checking_stack.Clear();
+
                 string line_text = editor.GetLineText(i).Trim();
 
+                int starter = line_text.IndexOf('<'), ender = line_text.IndexOf('>');
 
-               for (int j = 0; j<line_text.Length; j++)
+                for (int j = 0; j<line_text.Length; j++)
 
                 {
                     if (line_text[j] == '<'  )
@@ -219,22 +233,66 @@ namespace DataProject
                         
                         AllocConsole();
 
-
-                        if (line_text[1] !='!' && line_text[j+1] !='/' && line_text[1] != '?'&& line_text[j+1] != '!' && j + 1 < line_text.Length)
-                        {
-                            string s = line_text.Substring(1,  line_text.IndexOf('>')-1);
-                            if (s.Contains(" "))
-                            {
-                                s = s.Substring(0, s.IndexOf(' '));
-                            }
-
-                            leveling_stack.Push(s);
-                        }
-
                         if (j+1 < line_text.Length && line_text[j+1] == '!')
                         {
                             checking_stack.Pop();
                         }
+
+
+
+
+                  if (j + 1 < line_text.Length && line_text[line_text.IndexOf('<') + 1] != '!'
+                   && line_text[line_text.IndexOf('<') + 1] != '?'
+                   && line_text[line_text.IndexOf('<') + 1] != '!')
+
+                        {
+                            if (line_text.IndexOf('>') -1> 0)
+                            {
+                                
+                                int closer = 0; if (line_text[line_text.IndexOf('<',starter) + 1] == '/') { closer = 1; }
+                                  
+                                string s = line_text.Substring(starter+1+closer    ,   ender-1-starter-closer);
+
+                                starter = line_text.IndexOf('<',starter+1);
+                                ender = line_text.IndexOf('>', ender + 1);
+
+                                if (s.Contains(" ")==true) { s = s.Substring(0, s.IndexOf(' '));}
+                                 
+                                    leveling_stack.Push(s.Trim());
+                                if (s[0] == '!') { leveling_stack.Pop(); }
+
+
+
+                                if (line_text[line_text.IndexOf('>') - 1] == '/')
+                                {
+                                    leveling_stack.Pop();
+                                }
+
+                                 zero = leveling_stack.Peek().ToString();
+                                
+
+
+                                line_element = new line_handler { word = zero,line=i };
+                                stack_error.Add(line_element);
+
+
+
+                                if (line_text[line_text.IndexOf('>') - 1] == '/')
+                                {
+                                    stack_error.RemoveAt(stack_error.Count - 1);
+                                }
+
+                                
+
+                            }
+
+                            
+
+                        }
+
+
+
+
                     }
 
 
@@ -257,13 +315,13 @@ namespace DataProject
                         }                         
                     }
                     
-                   
 
+                    //here im coming 
                 }
                
-                if (line_text[0] != '<' && line_text[line_text.Length-2] !='-' )  { checking_stack.Push(line_text[0]);}
+                if (line_text.Length > 2 && line_text[0] != '<'  && line_text[line_text.Length-2] !='-')  { checking_stack.Push(line_text[0]);}
 
-                else if (line_text[line_text.Length - 1] != '>' && line_text[1] != '!' ){ checking_stack.Push(line_text[0]); }
+                else if (line_text.Length > 2 && line_text[line_text.Length - 1] != '>' && line_text[1] != '!' ){ checking_stack.Push(line_text[0]); }
 
 
                 if (checking_stack.Count != 0)
@@ -272,6 +330,9 @@ namespace DataProject
                     error.Add(error_element);   
                     
                 }
+
+               
+
 
                 label1.Text = "Error Num : " + error.Count.ToString();
 
@@ -311,7 +372,15 @@ namespace DataProject
             // editor.SelectedText = "mohamed";
             // editor.BookmarkColor = Color.Red;
 
-          
+           
+
+                for(int i = 0; i< stack_error.Count;i++)
+                {
+                    Console.WriteLine(stack_error[i].line + "   "+ stack_error[i].word);
+                }
+            
+
+
 
         }
 
