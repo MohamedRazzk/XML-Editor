@@ -26,6 +26,7 @@ namespace DataProject
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
 
+      
 
 
 
@@ -53,23 +54,265 @@ namespace DataProject
         struct error_handler
         {
             public int line ,start,end;
+            public bool type;
 
         }
 
         public void error_higliteer(int higlight)
         {
-
+            //AllocConsole();
+           // Console.WriteLine(error[higlight].type);
             
                 editor.SelectionColor = Color.Red;
                 editor.Navigate(error[higlight].line);
 
-                Range rng = new Range(editor, error[higlight].start, error[higlight].line, error[higlight].end, error[higlight].line);
+
+            Range rng = new Range(editor, error[higlight].start, error[higlight].line, error[higlight].end, error[higlight].line);
                 editor.Selection = rng;
-            
+
+
+            if (error[est].type == false)
+            {
+                label2.Text = "CL:" + (error[est].line+1)  ;
+                label3.Text = "ET : Syntax";
+            }
+            else
+            {
+                label2.Text = "CL :" + (error[est].line+1) ;
+                label3.Text = "ET : Level";
+            }
 
 
 
         }
+
+
+
+        public void error_detector()
+        {
+            //  AllocConsole();
+
+            Stack word = new Stack();
+            Stack close = new Stack();
+            Stack line_error = new Stack();
+
+
+
+            leveling_stack.Clear(); error.Clear(); word.Clear(); close.Clear(); line_error.Clear(); stack_error.Clear();
+            string zero = null;
+
+
+            int line = 0, start = 0, end = 0;
+
+
+            Range rng = new Range(editor, start, line, end, line);
+
+            var error_element = new error_handler { line = 0, start = 0, end = 20 };
+            var line_element = new line_handler { line = 0, word = null };
+            //  error.Add(error_element);
+
+
+
+
+            for (int i = 0; i < editor.LinesCount; i++)
+            {
+
+                checking_stack.Clear();
+
+                string line_text = editor.GetLineText(i).Trim();
+
+                int starter = line_text.IndexOf('<'), ender = line_text.IndexOf('>');
+
+                for (int j = 0; j < line_text.Length; j++)
+
+                {
+                    if (line_text[j] == '<')
+                    {
+                        checking_stack.Push(line_text[j]);
+
+
+
+                        if (j + 1 < line_text.Length && line_text[j + 1] == '!')
+                        {
+                            checking_stack.Pop();
+                        }
+
+                        if (j + 1 < line_text.Length && line_text[line_text.IndexOf('<') + 1] != '!'
+                         && line_text[line_text.IndexOf('<') + 1] != '?'
+                         && line_text[line_text.IndexOf('<') + 1] != '!')
+
+                        {
+                            if (line_text.IndexOf('>') - 1 > 0)
+                            {
+                                bool closer_check = false;
+                                short closer = 0; if (line_text[line_text.IndexOf('<', starter) + 1] == '/') { closer = 1; }
+
+                                string s = line_text.Substring(starter + 1 + closer, ender - 1 - starter - closer);
+
+                                starter = line_text.IndexOf('<', starter + 1);
+                                ender = line_text.IndexOf('>', ender + 1);
+
+                                if (s.Contains(" ") == true) { s = s.Substring(0, s.IndexOf(' ')); }
+
+                                leveling_stack.Push(s.Trim());
+
+                                if (s[0] == '!') { leveling_stack.Pop(); }
+
+
+                                if (line_text[line_text.IndexOf('>') - 1] == '/')
+                                {
+                                    leveling_stack.Pop();
+                                }
+
+
+
+                                zero = leveling_stack.Peek().ToString();
+
+                                if (closer == 1) { closer_check = true; }
+
+                                line_element = new line_handler { word = zero, line = i + 1, closer_checker = closer_check };
+                                stack_error.Add(line_element);
+
+
+
+                                if (line_text[line_text.IndexOf('>') - 1] == '/' || s[0] == '!')
+                                {
+                                    stack_error.RemoveAt(stack_error.Count - 1);
+                                }
+
+
+                            }
+
+                        }
+
+                    }
+
+
+                    else if (line_text[j] == '>')
+                    {
+                        if (checking_stack.Count != 0 && checking_stack.Peek().ToString() == "<" && j - 1 > 0 && line_text[j - 1] != '-')
+                        {
+                            checking_stack.Pop();
+
+                        }
+
+                        else if (checking_stack.Count == 0 && j - 1 > 0 && line_text[j - 1] != '-')
+                        {
+                            checking_stack.Push(line_text[j]);
+                        }
+
+                        else if (j == 0)
+                        {
+                            checking_stack.Push(line_text[j]);
+                        }
+                    }
+
+
+                }
+
+                if (line_text.Length > 2 && line_text[0] != '<' && line_text[line_text.Length - 2] != '-') { checking_stack.Push(line_text[0]); }
+
+                else if (line_text.Length > 2 && line_text[line_text.Length - 1] != '>' && line_text[1] != '!') { checking_stack.Push(line_text[0]); }
+
+
+                if (checking_stack.Count != 0)
+                {
+                    int zero_start = 0;
+                    foreach (char x in editor.GetLineText(i))
+                    { if (x != ' ') { zero_start = editor.GetLineText(i).IndexOf(x); break; } }
+
+                    error_element = new error_handler { line = i, start = zero_start, end = editor.GetLineText(i).Length, type = false };
+                    error.Add(error_element);
+
+                }
+
+            }
+
+
+
+
+            if (stack_error.Count >= 1)
+            {
+
+
+
+                for (int i = 0; i < stack_error.Count; i++)
+                {
+                    if (i > 0 && word.Peek().ToString() == stack_error[i].word && Convert.ToBoolean(close.Peek()) != stack_error[i].closer_checker)
+                    {
+                        word.Pop();
+                        close.Pop();
+                    }
+
+
+                    else if (i > 0 && word.Peek().ToString() != stack_error[i].word && stack_error[i].closer_checker == true)
+                    {
+                        word.Pop();
+                        close.Pop();
+                        line_error.Push(stack_error[i].line);
+                    }
+                    else if (i > 0 && word.Peek().ToString() == stack_error[i].word && stack_error[i].closer_checker == false)
+                    {
+
+                        line_error.Push(stack_error[i].line);
+                    }
+
+
+
+                    else
+                    {
+
+                        word.Push((stack_error[i].word));
+                        close.Push(stack_error[i].closer_checker);
+
+                    }
+
+                }
+            }
+
+
+            foreach (object obj in line_error)
+            {
+
+                // Console.WriteLine(obj.ToString());
+
+                //Console.WriteLine((int)obj);
+                int zero_start = 0;
+                foreach (char x in editor.GetLineText((int)obj - 1))
+                { if (x != ' ') { zero_start = editor.GetLineText((int)obj - 1).IndexOf(x); break; } }
+
+                error_element = new error_handler { line = (int)obj - 1, start = zero_start, end = editor.GetLineText((int)obj - 1).Length, type = true };
+                error.Add(error_element);
+            }
+
+
+            error = error.OrderBy(sel => sel.line).ToList();
+            label1.Text = "Total Errors : " + error.Count.ToString();
+
+
+        }
+
+
+
+        public void syntax_fixer()
+        {
+            string line_err = editor.SelectedText;
+            Console.WriteLine(line_err);
+
+
+
+
+        }
+
+
+        public void level_fixer()
+        {
+            string line_err = editor.SelectedText;
+            Console.WriteLine(line_err);
+
+        }
+
+
 
         public Form1()
         {
@@ -198,202 +441,7 @@ namespace DataProject
 
         private void redToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
-          //  AllocConsole();
-
-            Stack word = new Stack();
-            Stack close = new Stack();
-            Stack line_error = new Stack();
-
-
-
-            leveling_stack.Clear(); error.Clear(); word.Clear(); close.Clear(); line_error.Clear(); stack_error.Clear();
-            string zero = null;
-
-
-            int line = 0, start = 0, end = 0  ;
-            
-
-            Range rng = new Range(editor, start, line,end, line);
-
-            var error_element = new error_handler { line=0 ,start = 0,end = 20 };
-            var line_element = new line_handler { line = 0 , word = null };
-            //  error.Add(error_element);
-
-
-        
-
-            for (int i = 0; i < editor.LinesCount; i++)
-                {
-     
-                checking_stack.Clear();
-
-                string line_text = editor.GetLineText(i).Trim();
-
-                int starter = line_text.IndexOf('<'), ender = line_text.IndexOf('>');
-
-                for (int j = 0; j<line_text.Length; j++)
-
-                {
-                    if (line_text[j] == '<'  )
-                    {
-                        checking_stack.Push(line_text[j]);
-                        
-                        
-
-                        if (j+1 < line_text.Length && line_text[j+1] == '!')
-                        {
-                            checking_stack.Pop();
-                        }
-
-                  if (j + 1 < line_text.Length && line_text[line_text.IndexOf('<') + 1] != '!'
-                   && line_text[line_text.IndexOf('<') + 1] != '?'
-                   && line_text[line_text.IndexOf('<') + 1] != '!')
-
-                        {
-                            if (line_text.IndexOf('>') -1> 0)
-                            {
-                                bool closer_check = false;
-                                short closer = 0; if (line_text[line_text.IndexOf('<',starter) + 1] == '/') { closer = 1;  }
-                                  
-                                string s = line_text.Substring(starter+1+closer    ,   ender-1-starter-closer);
-
-                                starter = line_text.IndexOf('<',starter+1);
-                                ender = line_text.IndexOf('>', ender + 1);
-
-                                if (s.Contains(" ")==true) { s = s.Substring(0, s.IndexOf(' '));}
-                                 
-                                    leveling_stack.Push(s.Trim());
-
-                                if (s[0] == '!') { leveling_stack.Pop(); }
-
-
-                                if (line_text[line_text.IndexOf('>') - 1] == '/')
-                                {
-                                    leveling_stack.Pop();
-                                }
-
-
-
-                                 zero = leveling_stack.Peek().ToString();
-                                
-                                if(closer == 1) { closer_check = true; }
-                                
-                                line_element = new line_handler { word = zero,line=i+1 , closer_checker= closer_check };
-                                stack_error.Add(line_element);
-
-
-
-                                if (line_text[line_text.IndexOf('>') - 1] == '/' || s[0] == '!')
-                                {
-                                    stack_error.RemoveAt(stack_error.Count - 1);
-                                }
-
-
-                            }
-
-                        }
-
-                    }
-
-
-                    else if (line_text[j] == '>')
-                    {
-                        if (checking_stack.Count != 0 && checking_stack.Peek().ToString() == "<" && j - 1 > 0 && line_text[j - 1] != '-')
-                        {
-                            checking_stack.Pop();
-
-                        }
-
-                        else if (checking_stack.Count == 0 && j - 1 > 0 && line_text[j - 1] != '-')
-                        {
-                            checking_stack.Push(line_text[j]);
-                        }
-
-                        else if (j == 0)
-                        {
-                            checking_stack.Push(line_text[j]);
-                        }                         
-                    }
-                    
-
-                }
-               
-                if (line_text.Length > 2 && line_text[0] != '<'  && line_text[line_text.Length-2] !='-')  { checking_stack.Push(line_text[0]);}
-
-                else if (line_text.Length > 2 && line_text[line_text.Length - 1] != '>' && line_text[1] != '!' ){ checking_stack.Push(line_text[0]); }
-
-
-                if (checking_stack.Count != 0)
-                {
-                    error_element = new error_handler { line = i, start = 0, end = editor.GetLineText(i).Length };
-                    error.Add(error_element);   
-                    
-                }
-
-            }
-
-
-
-            
-            
-
-            if (stack_error.Count >= 1)
-            {
-                
-            
-
-                for (int i = 0; i < stack_error.Count; i++)
-                {
-                    if ( i>0 && word.Peek().ToString() == stack_error[i].word && Convert.ToBoolean(close.Peek()) != stack_error[i].closer_checker )
-                    {
-                        word.Pop();
-                        close.Pop();
-                    }
-
-                    
-                    else if ( i > 0 && word.Peek().ToString() != stack_error[i].word &&  stack_error[i].closer_checker == true)
-                    {
-                        word.Pop();
-                        close.Pop();
-                        line_error.Push(stack_error[i].line);
-                    }
-                    else if (i > 0 && word.Peek().ToString() == stack_error[i].word && stack_error[i].closer_checker == false)
-                    {
-                       
-                        line_error.Push(stack_error[i].line);
-                    }
-
-
-
-                    else {
-
-                        word.Push((stack_error[i].word));
-                        close.Push(stack_error[i].closer_checker);
-
-                    }
-
-                }
-            }
-
-
-           foreach (object obj in line_error)
-            {
-
-               // Console.WriteLine(obj.ToString());
-
-                //Console.WriteLine((int)obj);
-
-                error_element = new error_handler { line =(int)obj-1, start = 0, end = editor.GetLineText((int)obj-1).Length };
-                error.Add(error_element);
-            }
-
-
-
-            label1.Text = "Error Num : " + error.Count.ToString();
-
-
-
+            error_detector();
         }
 
         private void editor_Load(object sender, EventArgs e)
@@ -455,7 +503,12 @@ namespace DataProject
             {
                 MessageBox.Show("There is No errors");
             }
+
            
+
+
+
+
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -472,6 +525,26 @@ namespace DataProject
             {
                 MessageBox.Show("There is No errors");
             }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            AllocConsole();
+
+            if (error[est].type == false)
+            {
+                syntax_fixer();
+            }
+            else
+            {
+                level_fixer();
+            }
+
+
+            //Console.WriteLine(error[est].line+1);
+
+
+
         }
     }
 
