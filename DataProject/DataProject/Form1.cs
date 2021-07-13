@@ -198,9 +198,16 @@ namespace DataProject
 
         private void redToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
-            leveling_stack.Clear();
-            error.Clear();
+
+          //  AllocConsole();
+
+            Stack word = new Stack();
+            Stack close = new Stack();
+            Stack line_error = new Stack();
+
+
+
+            leveling_stack.Clear(); error.Clear(); word.Clear(); close.Clear(); line_error.Clear(); stack_error.Clear();
             string zero = null;
 
 
@@ -213,6 +220,8 @@ namespace DataProject
             var line_element = new line_handler { line = 0 , word = null };
             //  error.Add(error_element);
 
+
+        
 
             for (int i = 0; i < editor.LinesCount; i++)
                 {
@@ -230,7 +239,7 @@ namespace DataProject
                     {
                         checking_stack.Push(line_text[j]);
                         
-                        AllocConsole();
+                        
 
                         if (j+1 < line_text.Length && line_text[j+1] == '!')
                         {
@@ -322,22 +331,17 @@ namespace DataProject
                     
                 }
 
-                label1.Text = "Error Num : " + error.Count.ToString();
-
             }
 
 
 
             
-            Stack word = new Stack();
-            Stack close = new Stack();
-            Stack line_error = new Stack();
+            
 
             if (stack_error.Count >= 1)
             {
                 
-                
-                
+            
 
                 for (int i = 0; i < stack_error.Count; i++)
                 {
@@ -348,12 +352,19 @@ namespace DataProject
                     }
 
                     
-                    /*else if ( i > 0 && word.Peek().ToString() != stack_error[i].word && Convert.ToBoolean(close.Peek()) == stack_error[i].closer_checker)
+                    else if ( i > 0 && word.Peek().ToString() != stack_error[i].word &&  stack_error[i].closer_checker == true)
                     {
                         word.Pop();
                         close.Pop();
                         line_error.Push(stack_error[i].line);
-                    } */
+                    }
+                    else if (i > 0 && word.Peek().ToString() == stack_error[i].word && stack_error[i].closer_checker == false)
+                    {
+                       
+                        line_error.Push(stack_error[i].line);
+                    }
+
+
 
                     else {
 
@@ -366,25 +377,20 @@ namespace DataProject
             }
 
 
-            for (int i =0; i <= word.Count; i++)
+           foreach (object obj in line_error)
             {
-                Console.WriteLine(word.Peek());
-                word.Pop();
+
+               // Console.WriteLine(obj.ToString());
+
+                //Console.WriteLine((int)obj);
+
+                error_element = new error_handler { line =(int)obj-1, start = 0, end = editor.GetLineText((int)obj-1).Length };
+                error.Add(error_element);
             }
-            
 
 
 
-            
-            Console.WriteLine("count num " + stack_error.Count);
-
-            for(int i = 0; i < stack_error.Count; i++)
-             {
-            Console.WriteLine(stack_error[i].line + "   " + stack_error[i].closer_checker + "      " + stack_error[i].word);
-             }
-
-
-
+            label1.Text = "Error Num : " + error.Count.ToString();
 
 
 
