@@ -289,15 +289,76 @@ namespace DataProject
             error = error.OrderBy(sel => sel.line).ToList();
             label1.Text = "Total Errors : " + error.Count.ToString();
 
+            if (error.Count > 0)
+            {
+                error_higliteer(0);
+            }
+
 
         }
-
-
+        
 
         public void syntax_fixer()
         {
-            string line_err = editor.SelectedText;
-            Console.WriteLine(line_err);
+            string line_err = editor.SelectedText.Trim();
+           // Console.WriteLine(line_err);
+
+            if (line_err.IndexOf('<')!= 0 && line_err[line_err.IndexOf('<')-1] !=' ')
+            {
+
+               
+
+                if (line_err.IndexOf('>') != 0 && line_err[line_err.IndexOf('>') - 1] == '-')
+                { }
+
+                else
+                {
+                    line_err = line_err.Substring(line_err.IndexOf('<'), line_err.Length - line_err.IndexOf('<'));
+                    editor.SelectedText = line_err;
+
+
+                 //   Console.WriteLine(line_err);
+                  
+                }
+
+
+
+            }
+                  
+            if (line_err.IndexOf('<') == 0 && line_err[line_err.IndexOf('<') + 1] == '<')
+            {
+                
+                line_err = line_err.Substring(line_err.IndexOf('<')+1, line_err.Length - line_err.IndexOf('<')-1);
+                // Console.WriteLine(line_err);
+                editor.SelectedText = line_err;
+            }
+
+
+         
+
+            if (line_err.LastIndexOf('>') == line_err.Length-1 && line_err[line_err.LastIndexOf('>') -1 ] == '>')
+            {
+
+                line_err = line_err.Substring(0, line_err.LastIndexOf('>') );
+                //   Console.WriteLine(line_err);
+                editor.SelectedText = line_err;
+
+            }
+
+
+
+
+            if (line_err.LastIndexOf('>') !=line_err.Length-1 && line_err[1] != '!' )
+            {
+               
+                    line_err = line_err.Substring(0, line_err.LastIndexOf('>')+1);
+
+                //   Console.WriteLine(line_err);
+                editor.SelectedText = line_err;
+
+            }
+
+
 
 
 
@@ -308,7 +369,7 @@ namespace DataProject
         public void level_fixer()
         {
             string line_err = editor.SelectedText;
-            Console.WriteLine(line_err);
+            //Console.WriteLine(line_err);
 
         }
 
