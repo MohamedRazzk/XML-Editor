@@ -46,7 +46,7 @@ namespace DataProject
         {
             public int line;
             public string word;
-            public short closer_checker;
+            public bool closer_checker;
 
         }
 
@@ -244,7 +244,7 @@ namespace DataProject
                         {
                             if (line_text.IndexOf('>') -1> 0)
                             {
-                                
+                                bool closer_check = false;
                                 short closer = 0; if (line_text[line_text.IndexOf('<',starter) + 1] == '/') { closer = 1;  }
                                   
                                 string s = line_text.Substring(starter+1+closer    ,   ender-1-starter-closer);
@@ -268,12 +268,14 @@ namespace DataProject
 
                                  zero = leveling_stack.Peek().ToString();
                                 
-                                line_element = new line_handler { word = zero,line=i+1 , closer_checker=closer };
+                                if(closer == 1) { closer_check = true; }
+                                
+                                line_element = new line_handler { word = zero,line=i+1 , closer_checker= closer_check };
                                 stack_error.Add(line_element);
 
 
 
-                                if (line_text[line_text.IndexOf('>') - 1] == '/' ||s[0] == '!')
+                                if (line_text[line_text.IndexOf('>') - 1] == '/' || s[0] == '!')
                                 {
                                     stack_error.RemoveAt(stack_error.Count - 1);
                                 }
@@ -325,28 +327,65 @@ namespace DataProject
             }
 
 
+
+            
+            Stack word = new Stack();
+            Stack close = new Stack();
+            Stack line_error = new Stack();
+
             if (stack_error.Count >= 1)
             {
-                Stack word = new Stack();
-                Stack close = new Stack();
-                word.Push(stack_error[0].word);
-                close.Push(stack_error[0].closer_checker);
+                
+                
+                
 
-
-                for (int i = 1; i < stack_error.Count; i++)
+                for (int i = 0; i < stack_error.Count; i++)
                 {
-                    
-                 if (stack_error[i].word == word.Peek().ToString() && stack_error[i].closer_checker == (short)close.Peek())
+                    if ( i>0 && word.Peek().ToString() == stack_error[i].word && Convert.ToBoolean(close.Peek()) != stack_error[i].closer_checker )
+                    {
+                        word.Pop();
+                        close.Pop();
+                    }
 
                     
-                    
-                    Console.WriteLine(stack_error[i].line + "   " + +stack_error[i].closer_checker + "      " + stack_error[i].word);
+                    /*else if ( i > 0 && word.Peek().ToString() != stack_error[i].word && Convert.ToBoolean(close.Peek()) == stack_error[i].closer_checker)
+                    {
+                        word.Pop();
+                        close.Pop();
+                        line_error.Push(stack_error[i].line);
+                    } */
+
+                    else {
+
+                        word.Push((stack_error[i].word));
+                        close.Push(stack_error[i].closer_checker);
+
+                    }
+
                 }
             }
 
+
+            for (int i =0; i <= word.Count; i++)
+            {
+                Console.WriteLine(word.Peek());
+                word.Pop();
+            }
             
+
+
+
             
-             
+            Console.WriteLine("count num " + stack_error.Count);
+
+            for(int i = 0; i < stack_error.Count; i++)
+             {
+            Console.WriteLine(stack_error[i].line + "   " + stack_error[i].closer_checker + "      " + stack_error[i].word);
+             }
+
+
+
+
 
 
         }
