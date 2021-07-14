@@ -15,8 +15,6 @@ using System.Runtime.InteropServices;
 namespace DataProject
 {
     
-
-
     
     
     public partial class Form1 : Form
@@ -423,41 +421,106 @@ namespace DataProject
         {
             parsing();
             AllocConsole();
+            List<int> level = new List<int>();
 
-            int count = 0;
-            int count_x = 0;
-            for (int i = 0; i < editor.LinesCount; i++)
+            level.Add(0);
+            int level_num = 0;
+
+            for (int i = 2; i < stack_error.Count; i+=2)
             {
+               if (stack_error[i].closer_checker == false && stack_error[i-1].closer_checker == false )
 
-                editor.Selection = new Range(editor, i);
-                string TOT = editor.SelectedText.Trim();
-                 count = TOT.Count(f => f == '<');
-                count_x = TOT.Count(f => f == '/');
+                {
+                  //  Console.WriteLine(stack_error[i].line);
+                  ///  Console.WriteLine(stack_error[i-1].line);
+                   // Console.WriteLine("true true");
+
+
+                    level.Add(level_num + 1);
+                    level.Add(level_num + 2);
+                    level_num += 2;
 
 
 
+                }
 
-                Console.WriteLine(count + " --- "+count_x);
+                else if (stack_error[i].closer_checker == true && stack_error[i - 1].closer_checker == false)
+
+                {
+                   // Console.WriteLine(stack_error[i].line);
+                   // Console.WriteLine(stack_error[i - 1].line);
+
+                    level.Add(level_num + 1);
+                   // Console.WriteLine("fasle true");
+
+
+                }
+
+                else if (stack_error[i].closer_checker == false && stack_error[i - 1].closer_checker == true)
+                {
+                   // Console.WriteLine(stack_error[i].line);
+                  //  Console.WriteLine(stack_error[i - 1].line);
+
+                    level.Add(level_num);
+                    level.Add(level_num);
+                  //  Console.WriteLine("true fasle");
+                }
+
+
+               else if (stack_error[i].closer_checker == true && stack_error[i - 1].closer_checker == true)
+                {
+                  //  Console.WriteLine(stack_error[i].line);
+                  //  Console.WriteLine(stack_error[i - 1].line);
+//
+                    level.Add(level_num + 1);
+                    level.Add(level_num + 2);
+                    level_num -= 2;
+                  //  Console.WriteLine("fase fasle");
+
+                }
 
 
             }
 
 
-        
+           // Console.WriteLine(level.Count);
+
+           for(int i = 0; i<level.Count; i++)
+           {
+                Console.WriteLine(level[i]);
+            }
+
+
+           for (int i = stack_error[0].line; i<level.Count;i++)
+            {
+                editor.Selection = new Range(editor, i);
+
+                
+                editor.SelectedText = string.Concat(Enumerable.Repeat("  ", level[i])) + editor.SelectedText;
+
+            }
+            editor.Navigate(0);
+
+
+
+          
 
             /*
+             * 
+             *   count = TOT.Count(f => f == '<');
+                count_x = TOT.Count(f => f == '/');
             editor.Selection = new Range(editor, i);
 
             var zed = editor.Text;
             zed.GetType();
            */
-           
+
             Console.WriteLine("finish");
 
-            for (int i = 0; i < stack_error.Count; i++)
-            {
-               Console.WriteLine(stack_error[i].line + "   " + stack_error[i].closer_checker + "   " + stack_error[i].word);
-           }
+           // for (int i = 0; i < stack_error.Count; i++)
+           //{
+          //   Console.WriteLine(stack_error[i].line + "   " + stack_error[i].closer_checker + "   " + stack_error[i].word);
+          // }
 
         }
 
