@@ -41,6 +41,7 @@ namespace DataProject
 
         List<error_handler> error = new List<error_handler>();
         List<line_handler> stack_error = new List<line_handler>();
+        List<level_line_fixer> linefixlevel = new List<level_line_fixer>();
 
 
         struct line_handler
@@ -55,6 +56,14 @@ namespace DataProject
         {
             public int line ,start,end;
             public bool type;
+            public string fixer;
+
+        }
+
+        struct level_line_fixer
+        {
+            public int line;
+            public string word , fixe;
 
         }
 
@@ -87,18 +96,11 @@ namespace DataProject
         }
 
 
-
-        public void error_detector()
+        public void parsing ()
         {
-            //  AllocConsole();
-
-            Stack word = new Stack();
-            Stack close = new Stack();
-            Stack line_error = new Stack();
 
 
-
-            leveling_stack.Clear(); error.Clear(); word.Clear(); close.Clear(); line_error.Clear(); stack_error.Clear();
+            leveling_stack.Clear(); error.Clear(); stack_error.Clear();
             string zero = null;
 
 
@@ -107,11 +109,10 @@ namespace DataProject
 
             Range rng = new Range(editor, start, line, end, line);
 
-            var error_element = new error_handler { line = 0, start = 0, end = 20 };
+            var error_element = new error_handler { line = 0, start = 0, end = 20, type = false };
             var line_element = new line_handler { line = 0, word = null };
+
             //  error.Add(error_element);
-
-
 
 
             for (int i = 0; i < editor.LinesCount; i++)
@@ -187,24 +188,17 @@ namespace DataProject
 
                     }
 
-
                     else if (line_text[j] == '>')
                     {
                         if (checking_stack.Count != 0 && checking_stack.Peek().ToString() == "<" && j - 1 > 0 && line_text[j - 1] != '-')
-                        {
-                            checking_stack.Pop();
-
-                        }
+                        { checking_stack.Pop(); }
 
                         else if (checking_stack.Count == 0 && j - 1 > 0 && line_text[j - 1] != '-')
-                        {
-                            checking_stack.Push(line_text[j]);
-                        }
+                        { checking_stack.Push(line_text[j]); }
 
                         else if (j == 0)
-                        {
-                            checking_stack.Push(line_text[j]);
-                        }
+                        { checking_stack.Push(line_text[j]); }
+
                     }
 
 
@@ -228,47 +222,99 @@ namespace DataProject
 
             }
 
+        }
+
+
+        public void error_detector()
+        {
+            parsing();
+
+            Stack word = new Stack();
+            Stack close = new Stack();
+            Stack line_error = new Stack();
+            
+
+
+           word.Clear(); close.Clear(); line_error.Clear(); stack_error.Clear();
+
+            var error_element = new error_handler { line = 0, start = 0, end = 20, type = false };
+            var level_elemnt = new level_line_fixer { line = 0, word = null, fixe = null };
 
 
 
-            if (stack_error.Count >= 1)
+
+
+
+
+
+
+
+     
+            AllocConsole();
+            Console.Clear();
+            
+            for (int i = 0; i < stack_error.Count; i++)
+            {
+                Console.WriteLine(stack_error[i].line + "   " + stack_error[i].closer_checker + "   " + stack_error[i].word);
+            } 
+
+
+
+
+
+
+
+
+
+            for (int i = 0; i < stack_error.Count; i++)
+
             {
 
 
-
-                for (int i = 0; i < stack_error.Count; i++)
+                if (word.Count == 0)
                 {
-                    if (i > 0 && word.Peek().ToString() == stack_error[i].word && Convert.ToBoolean(close.Peek()) != stack_error[i].closer_checker)
-                    {
-                        word.Pop();
-                        close.Pop();
-                    }
-
-
-                    else if (i > 0 && word.Peek().ToString() != stack_error[i].word && stack_error[i].closer_checker == true)
-                    {
-                        word.Pop();
-                        close.Pop();
-                        line_error.Push(stack_error[i].line);
-                    }
-                    else if (i > 0 && word.Peek().ToString() == stack_error[i].word && stack_error[i].closer_checker == false)
-                    {
-
-                        line_error.Push(stack_error[i].line);
-                    }
-
-
-
-                    else
-                    {
-
-                        word.Push((stack_error[i].word));
-                        close.Push(stack_error[i].closer_checker);
-
-                    }
+                    word.Push(stack_error[i].word);
+                    close.Push(stack_error[i].closer_checker);
+                    line_error.Push(stack_error[i].line);
 
                 }
+
+                else if (stack_error[i].word == word.Peek().ToString() && stack_error[i].closer_checker == true && Convert.ToBoolean(close.Peek()) == false)
+                {
+                    word.Pop(); close.Pop(); line_error.Pop();
+
+                }
+
+
+                else if (stack_error[i].word != word.Peek().ToString() && stack_error[i].closer_checker == true && Convert.ToBoolean(close.Peek()) == false)
+                {
+
+                    level_elemnt = new level_line_fixer { line = stack_error[i].line, word = stack_error[i].word, fixe = word.Peek().ToString() };
+                    linefixlevel.Add(level_elemnt);
+                    word.Pop(); close.Pop(); line_error.Pop();
+                }
+                else
+                {
+                    word.Push(stack_error[i].word);
+                    close.Push(stack_error[i].closer_checker);
+                    line_error.Push(stack_error[i].line);
+                }
+
+
+
             }
+
+
+
+
+
+
+            for (int i = 0;  i < linefixlevel.Count; i++)
+           {
+               Console.WriteLine(linefixlevel[i].line + " ---  " + linefixlevel[i].word + " ---  " + linefixlevel[i].fixe);
+                
+            }
+
 
 
             foreach (object obj in line_error)
@@ -373,7 +419,76 @@ namespace DataProject
 
         }
 
+        public void puttify ()
+        {
+            parsing();
+            AllocConsole();
 
+            int count = 0;
+            int count_x = 0;
+            for (int i = 0; i < editor.LinesCount; i++)
+            {
+
+                editor.Selection = new Range(editor, i);
+                string TOT = editor.SelectedText.Trim();
+                 count = TOT.Count(f => f == '<');
+                count_x = TOT.Count(f => f == '/');
+
+
+
+
+                Console.WriteLine(count + " --- "+count_x);
+
+
+            }
+
+
+        
+
+            /*
+            editor.Selection = new Range(editor, i);
+
+            var zed = editor.Text;
+            zed.GetType();
+           */
+           
+            Console.WriteLine("finish");
+
+            for (int i = 0; i < stack_error.Count; i++)
+            {
+               Console.WriteLine(stack_error[i].line + "   " + stack_error[i].closer_checker + "   " + stack_error[i].word);
+           }
+
+        }
+
+        public void ugly()
+        {
+  
+            for (int i = 0; i < editor.LinesCount; i++)
+            {
+                editor.Selection = new Range(editor, i);
+
+                editor.SelectedText = editor.SelectedText.Trim();
+
+            }
+            editor.Navigate(0);
+
+    }
+
+
+
+        public void minify()
+        {
+            string mini = "";
+            for (int i = 0; i < editor.LinesCount; i++)
+            {
+
+                mini += editor.GetLineText(i).Trim();
+
+            }
+            editor.Text = mini;
+
+        }
 
         public Form1()
         {
@@ -606,6 +721,22 @@ namespace DataProject
 
 
 
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            puttify();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            minify();
+
+        }
+
+        private void uglyFormatToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ugly();
         }
     }
 
