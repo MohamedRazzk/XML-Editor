@@ -37,6 +37,7 @@
             this.redToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uglyFormatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.horToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.convertJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,7 +57,6 @@
             this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.customizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.teamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.editor = new FastColoredTextBoxNS.FastColoredTextBox();
@@ -70,8 +70,8 @@
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.convertJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.compressToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openCompressedFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.editor)).BeginInit();
@@ -133,6 +133,12 @@
             this.horToolStripMenuItem.Text = "Horizontal Tree ";
             this.horToolStripMenuItem.Click += new System.EventHandler(this.horToolStripMenuItem_Click);
             // 
+            // convertJSONToolStripMenuItem
+            // 
+            this.convertJSONToolStripMenuItem.Name = "convertJSONToolStripMenuItem";
+            this.convertJSONToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.convertJSONToolStripMenuItem.Text = "Convert->JSON";
+            // 
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -153,7 +159,7 @@
             this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.newToolStripMenuItem.Text = "&New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
@@ -163,14 +169,14 @@
             this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.openToolStripMenuItem.Text = "&Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
             // 
             // saveToolStripMenuItem
             // 
@@ -178,26 +184,26 @@
             this.saveToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.saveToolStripMenuItem.Text = "&Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.saveAsToolStripMenuItem.Text = "Save &As";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click_1);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(143, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             // 
             // editToolStripMenuItem
@@ -281,7 +287,8 @@
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.customizeToolStripMenuItem,
-            this.optionsToolStripMenuItem});
+            this.compressToolStripMenuItem,
+            this.openCompressedFileToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.toolsToolStripMenuItem.Text = "&Tools";
@@ -292,12 +299,6 @@
             this.customizeToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
             this.customizeToolStripMenuItem.Text = "&Customize";
             this.customizeToolStripMenuItem.Click += new System.EventHandler(this.customizeToolStripMenuItem_Click_1);
-            // 
-            // optionsToolStripMenuItem
-            // 
-            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
-            this.optionsToolStripMenuItem.Text = "&Options";
             // 
             // teamToolStripMenuItem
             // 
@@ -379,7 +380,7 @@
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.Color.Red;
-            this.button1.Location = new System.Drawing.Point(188, 2);
+            this.button1.Location = new System.Drawing.Point(283, 1);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(93, 21);
             this.button1.TabIndex = 4;
@@ -451,7 +452,7 @@
             // 
             this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(396, 2);
+            this.button5.Location = new System.Drawing.Point(491, 1);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(93, 21);
             this.button5.TabIndex = 10;
@@ -463,7 +464,7 @@
             // 
             this.button6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button6.Location = new System.Drawing.Point(493, 2);
+            this.button6.Location = new System.Drawing.Point(588, 1);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(93, 21);
             this.button6.TabIndex = 11;
@@ -475,36 +476,31 @@
             // 
             this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button7.Location = new System.Drawing.Point(284, 2);
+            this.button7.Location = new System.Drawing.Point(379, 1);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(108, 21);
             this.button7.TabIndex = 12;
             this.button7.Text = "Convert -> JSON";
             this.button7.UseVisualStyleBackColor = true;
             // 
-            // button8
+            // compressToolStripMenuItem
             // 
-            this.button8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button8.Location = new System.Drawing.Point(590, 2);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(93, 21);
-            this.button8.TabIndex = 13;
-            this.button8.Text = "Compress";
-            this.button8.UseVisualStyleBackColor = true;
+            this.compressToolStripMenuItem.Name = "compressToolStripMenuItem";
+            this.compressToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.compressToolStripMenuItem.Text = "Compress";
+            this.compressToolStripMenuItem.Click += new System.EventHandler(this.compressToolStripMenuItem_Click);
             // 
-            // convertJSONToolStripMenuItem
+            // openCompressedFileToolStripMenuItem
             // 
-            this.convertJSONToolStripMenuItem.Name = "convertJSONToolStripMenuItem";
-            this.convertJSONToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
-            this.convertJSONToolStripMenuItem.Text = "Convert->JSON";
+            this.openCompressedFileToolStripMenuItem.Name = "openCompressedFileToolStripMenuItem";
+            this.openCompressedFileToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.openCompressedFileToolStripMenuItem.Text = "Open CompressedFile";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1174, 598);
-            this.Controls.Add(this.button8);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
@@ -549,7 +545,6 @@
         private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem customizeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem teamToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
@@ -568,10 +563,11 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.Button button8;
         private System.Windows.Forms.ToolStripMenuItem uglyFormatToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem horToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem convertJSONToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem compressToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openCompressedFileToolStripMenuItem;
     }
 }
 

@@ -34,6 +34,7 @@ namespace DataProject
         private string FileName = string.Empty;
 
         int est = 0;
+        string treebuilder  =  "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!()*+,-./:;<=>?@[\\]^_`{|}~ \t\n\r\x0b\x0c";
 
         List<error_handler> error = new List<error_handler>();
         List<line_handler> stack_error = new List<line_handler>();
@@ -62,6 +63,64 @@ namespace DataProject
             public string word , fixe;
 
         }
+
+     
+
+        public  string comp_encoding( string input)
+        {
+
+            input = Convert.ToString(input);
+            HuffmanComp huffmanTree = new HuffmanComp();
+
+          
+            huffmanTree.Build(treebuilder);
+
+            BitArray encoded = huffmanTree.Encode(input);
+
+            var sb = new StringBuilder();
+
+            for (int i = 0; i < encoded.Count; i++)
+            {
+                char c = encoded[i] ? '1' : '0';
+                sb.Append(c);
+            }
+            
+            string enc_sting = sb.ToString();
+
+            /*
+
+            string deco_text = enc_sting;
+            var bit_arr = new BitArray(deco_text.Select(c => c == '1').ToArray());
+
+            string decoded = huffmanTree.Decode(bit_arr);
+            */
+
+
+           // Console.WriteLine(enc_sting);
+
+            return enc_sting;
+
+
+        }
+
+
+        public string comp_decoding( string input)
+        {
+            input = Convert.ToString(input);
+
+            HuffmanComp huffmanTree = new HuffmanComp();
+          
+            huffmanTree.Build(treebuilder);
+            string deco_text = input;
+            var bit_arr = new BitArray(deco_text.Select(c => c == '1').ToArray());
+
+            string decoded = huffmanTree.Decode(bit_arr);
+
+            return decoded;
+
+    
+        }
+
 
 
         public void error_higliteer(int higlight)
@@ -793,6 +852,40 @@ namespace DataProject
             treedaialog(ref tree_space);
 
             puttify(tree_space);
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            AllocConsole();
+            string zero = "zeroman";
+             //Console.WriteLine( comp_encoding(zero));
+
+            string encode = comp_encoding(zero);
+           Console.WriteLine(encode);
+
+            string decode = comp_decoding(encode);
+            Console.WriteLine(decode);
+
+            //string toty = comp_decoding (encode);
+            //Console.WriteLine(toolsToolStripMenuItem);
+
+        }
+
+       
+
+        private void compressToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AllocConsole();
+            RichTextBox tempRtb = new RichTextBox();
+            tempRtb.Text = editor.Text;
+
+
+            Console.WriteLine(tempRtb.Lines[0]);
+
+
+
+
+
         }
     }
 
