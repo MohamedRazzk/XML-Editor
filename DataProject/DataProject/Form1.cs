@@ -10,6 +10,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FastColoredTextBoxNS;
+using Microsoft.VisualBasic;
 using System.Runtime.InteropServices;
 
 namespace DataProject
@@ -25,9 +26,6 @@ namespace DataProject
         static extern bool AllocConsole();
 
       
-
-
-
 
         Stack checking_stack = new Stack();
         Stack leveling_stack = new Stack();
@@ -91,13 +89,25 @@ namespace DataProject
 
 
 
+
+        }
+
+
+        public void shifter (int line, int sapce)
+        {
+            editor.Selection = new Range(editor, line - 1);
+
+            for (int mu = 0; mu < sapce; mu++)
+            {
+                editor.IncreaseIndent();
+            }
+
+
         }
 
 
         public void parsing ()
         {
-
-
             leveling_stack.Clear(); error.Clear(); stack_error.Clear();
             string zero = null;
 
@@ -233,41 +243,31 @@ namespace DataProject
             
 
 
-           word.Clear(); close.Clear(); line_error.Clear(); stack_error.Clear();
+           word.Clear(); close.Clear(); line_error.Clear(); linefixlevel.Clear();
 
             var error_element = new error_handler { line = 0, start = 0, end = 20, type = false };
             var level_elemnt = new level_line_fixer { line = 0, word = null, fixe = null };
 
 
 
-
-
-
-
-
-
-
-     
             AllocConsole();
             Console.Clear();
-            
+
+
+            Console.WriteLine(stack_error.Count);
             for (int i = 0; i < stack_error.Count; i++)
             {
                 Console.WriteLine(stack_error[i].line + "   " + stack_error[i].closer_checker + "   " + stack_error[i].word);
-            } 
+            }
 
 
 
-
-
-
-
+            Console.WriteLine("we are here ");
 
 
             for (int i = 0; i < stack_error.Count; i++)
 
             {
-
 
                 if (word.Count == 0)
                 {
@@ -299,11 +299,7 @@ namespace DataProject
                 }
 
 
-
             }
-
-
-
 
 
 
@@ -313,22 +309,20 @@ namespace DataProject
                 
             }
 
+            
 
-
-            foreach (object obj in line_error)
+            foreach (level_line_fixer obj in linefixlevel)
             {
-
-                // Console.WriteLine(obj.ToString());
-
-                //Console.WriteLine((int)obj);
+                
+                
                 int zero_start = 0;
-                foreach (char x in editor.GetLineText((int)obj - 1))
-                { if (x != ' ') { zero_start = editor.GetLineText((int)obj - 1).IndexOf(x); break; } }
+                foreach (char x in editor.GetLineText(obj.line - 1))
+                { if (x != ' ') { zero_start = editor.GetLineText(obj.line - 1).IndexOf(x); break; } }
 
-                error_element = new error_handler { line = (int)obj - 1, start = zero_start, end = editor.GetLineText((int)obj - 1).Length, type = true };
+                error_element = new error_handler { line = obj.line - 1, start = zero_start, end = editor.GetLineText(obj.line - 1).Length, type = true };
                 error.Add(error_element);
             }
-
+            
 
             error = error.OrderBy(sel => sel.line).ToList();
             label1.Text = "Total Errors : " + error.Count.ToString();
@@ -402,125 +396,67 @@ namespace DataProject
 
             }
 
-
+            
 
 
 
 
         }
-
 
         public void level_fixer()
         {
+
             string line_err = editor.SelectedText;
-            //Console.WriteLine(line_err);
+            int selectedline = editor.Selection.FromLine+1;
+            level_line_fixer fix_word = linefixlevel.FirstOrDefault(x => (x.line) == selectedline);
+            editor.SelectedText = line_err.Replace(fix_word.word, fix_word.fixe); ;
+          
 
         }
 
-        public void puttify ()
+        public void puttify (int treespacing)
         {
             parsing();
-            AllocConsole();
-            List<int> level = new List<int>();
 
-            level.Add(0);
-            int level_num = 0;
+            int spacecap = 0;
+            for (int z =1; z <=editor.LinesCount; z++)
 
-            for (int i = 2; i < stack_error.Count; i+=2)
             {
-               if (stack_error[i].closer_checker == false && stack_error[i-1].closer_checker == false )
 
+                var newList = stack_error.FindAll(s => s.line == z);
+                int capper = 0;
+
+
+                for (int i = 0; i < newList.Count; i++)
                 {
-                  //  Console.WriteLine(stack_error[i].line);
-                  ///  Console.WriteLine(stack_error[i-1].line);
-                   // Console.WriteLine("true true");
-
-
-                    level.Add(level_num + 1);
-                    level.Add(level_num + 2);
-                    level_num += 2;
-
-
-
-                }
-
-                else if (stack_error[i].closer_checker == true && stack_error[i - 1].closer_checker == false)
-
-                {
-                   // Console.WriteLine(stack_error[i].line);
-                   // Console.WriteLine(stack_error[i - 1].line);
-
-                    level.Add(level_num + 1);
-                   // Console.WriteLine("fasle true");
-
-
-                }
-
-                else if (stack_error[i].closer_checker == false && stack_error[i - 1].closer_checker == true)
-                {
-                   // Console.WriteLine(stack_error[i].line);
-                  //  Console.WriteLine(stack_error[i - 1].line);
-
-                    level.Add(level_num);
-                    level.Add(level_num);
-                  //  Console.WriteLine("true fasle");
+                    if (newList[i].closer_checker == false) { capper++; }
+                    else { capper--; }
                 }
 
 
-               else if (stack_error[i].closer_checker == true && stack_error[i - 1].closer_checker == true)
-                {
-                  //  Console.WriteLine(stack_error[i].line);
-                  //  Console.WriteLine(stack_error[i - 1].line);
-//
-                    level.Add(level_num + 1);
-                    level.Add(level_num + 2);
-                    level_num -= 2;
-                  //  Console.WriteLine("fase fasle");
+                editor.Selection = new Range(editor, z-1);
 
+
+                if (capper == 1)
+                {
+                    shifter(z, spacecap* treespacing);
+                    spacecap++;
                 }
 
+
+                else if(capper == -1 )
+                {
+                    spacecap--;
+                    shifter(z, spacecap* treespacing);
+                }
+
+  
+                else if (capper == 0)
+                {
+                    shifter(z, spacecap* treespacing);
+                }
 
             }
-
-
-           // Console.WriteLine(level.Count);
-
-           for(int i = 0; i<level.Count; i++)
-           {
-                Console.WriteLine(level[i]);
-            }
-
-
-           for (int i = stack_error[0].line; i<level.Count;i++)
-            {
-                editor.Selection = new Range(editor, i);
-
-                
-                editor.SelectedText = string.Concat(Enumerable.Repeat("  ", level[i])) + editor.SelectedText;
-
-            }
-            editor.Navigate(0);
-
-
-
-          
-
-            /*
-             * 
-             *   count = TOT.Count(f => f == '<');
-                count_x = TOT.Count(f => f == '/');
-            editor.Selection = new Range(editor, i);
-
-            var zed = editor.Text;
-            zed.GetType();
-           */
-
-            Console.WriteLine("finish");
-
-           // for (int i = 0; i < stack_error.Count; i++)
-           //{
-          //   Console.WriteLine(stack_error[i].line + "   " + stack_error[i].closer_checker + "   " + stack_error[i].word);
-          // }
 
         }
 
@@ -538,8 +474,6 @@ namespace DataProject
 
     }
 
-
-
         public void minify()
         {
             string mini = "";
@@ -556,6 +490,46 @@ namespace DataProject
         public Form1()
         {
             InitializeComponent();
+        }
+
+        private static DialogResult treedaialog(ref int input)
+        {
+            System.Drawing.Size size = new System.Drawing.Size(250, 70);
+            Form inputBox = new Form();
+
+            inputBox.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            inputBox.ClientSize = size;
+            inputBox.MaximizeBox = false;
+            inputBox.Text = "Tree Spacing View ";
+
+            System.Windows.Forms.NumericUpDown numerical= new NumericUpDown();
+            numerical.Size = new System.Drawing.Size(size.Width - 10, 23);
+            numerical.Location = new System.Drawing.Point(5, 5);
+            numerical.Value = input;
+            inputBox.Controls.Add(numerical);
+
+            Button okButton = new Button();
+            okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            okButton.Name = "okButton";
+            okButton.Size = new System.Drawing.Size(75, 23);
+            okButton.Text = "&OK";
+            okButton.Location = new System.Drawing.Point(size.Width - 80 - 80, 39);
+            inputBox.Controls.Add(okButton);
+
+            Button cancelButton = new Button();
+            cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            cancelButton.Name = "cancelButton";
+            cancelButton.Size = new System.Drawing.Size(75, 23);
+            cancelButton.Text = "&Cancel";
+            cancelButton.Location = new System.Drawing.Point(size.Width - 80, 39);
+            inputBox.Controls.Add(cancelButton);
+
+            inputBox.AcceptButton = okButton;
+            inputBox.CancelButton = cancelButton;
+
+            DialogResult result = inputBox.ShowDialog();
+            input =(int)numerical.Value;
+            return result;
         }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
@@ -724,8 +698,8 @@ namespace DataProject
 
         private void button1_Click(object sender, EventArgs e)
         {
-
-            redToolStripMenuItem_Click( sender,  e);
+         
+            error_detector();
 
         }
 
@@ -769,7 +743,7 @@ namespace DataProject
         private void button4_Click(object sender, EventArgs e)
         {
             AllocConsole();
-
+           
             if (error[est].type == false)
             {
                 syntax_fixer();
@@ -778,6 +752,15 @@ namespace DataProject
             {
                 level_fixer();
             }
+            label1.Text = "Total Errors : " + error.Count.ToString();
+            label2.Text = "CL : $";
+            label3.Text = "ET : Null";
+            error.RemoveAt(est);
+            button2_Click(sender, e);
+            
+
+
+
 
 
             //Console.WriteLine(error[est].line+1);
@@ -788,7 +771,7 @@ namespace DataProject
 
         private void button5_Click(object sender, EventArgs e)
         {
-            puttify();
+            puttify(1);
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -800,6 +783,14 @@ namespace DataProject
         private void uglyFormatToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ugly();
+        }
+
+        private void horToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            int tree_space = 0;
+            treedaialog(ref tree_space);
+
+            puttify(tree_space);
         }
     }
 

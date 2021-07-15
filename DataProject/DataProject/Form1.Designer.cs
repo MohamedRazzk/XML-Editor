@@ -36,6 +36,7 @@
             this.pastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.redToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uglyFormatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.horToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,6 +71,7 @@
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
+            this.convertJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.editor)).BeginInit();
@@ -82,44 +84,54 @@
             this.cutToolStripMenuItem1,
             this.pastToolStripMenuItem,
             this.redToolStripMenuItem,
-            this.uglyFormatToolStripMenuItem});
+            this.uglyFormatToolStripMenuItem,
+            this.horToolStripMenuItem,
+            this.convertJSONToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 136);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(158, 158);
             // 
             // copyToolStripMenuItem1
             // 
             this.copyToolStripMenuItem1.Name = "copyToolStripMenuItem1";
-            this.copyToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.copyToolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
             this.copyToolStripMenuItem1.Text = "Copy";
             this.copyToolStripMenuItem1.Click += new System.EventHandler(this.copyToolStripMenuItem_Click_1);
             // 
             // cutToolStripMenuItem1
             // 
             this.cutToolStripMenuItem1.Name = "cutToolStripMenuItem1";
-            this.cutToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.cutToolStripMenuItem1.Size = new System.Drawing.Size(157, 22);
             this.cutToolStripMenuItem1.Text = "Cut";
             this.cutToolStripMenuItem1.Click += new System.EventHandler(this.cutToolStripMenuItem_Click);
             // 
             // pastToolStripMenuItem
             // 
             this.pastToolStripMenuItem.Name = "pastToolStripMenuItem";
-            this.pastToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.pastToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.pastToolStripMenuItem.Text = "Past";
             this.pastToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click_1);
             // 
             // redToolStripMenuItem
             // 
+            this.redToolStripMenuItem.ForeColor = System.Drawing.Color.Red;
             this.redToolStripMenuItem.Name = "redToolStripMenuItem";
-            this.redToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.redToolStripMenuItem.Text = "Check";
+            this.redToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.redToolStripMenuItem.Text = "Check XML";
             this.redToolStripMenuItem.Click += new System.EventHandler(this.redToolStripMenuItem_Click);
             // 
             // uglyFormatToolStripMenuItem
             // 
             this.uglyFormatToolStripMenuItem.Name = "uglyFormatToolStripMenuItem";
-            this.uglyFormatToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.uglyFormatToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
             this.uglyFormatToolStripMenuItem.Text = "Ugly Format";
             this.uglyFormatToolStripMenuItem.Click += new System.EventHandler(this.uglyFormatToolStripMenuItem_Click);
+            // 
+            // horToolStripMenuItem
+            // 
+            this.horToolStripMenuItem.Name = "horToolStripMenuItem";
+            this.horToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.horToolStripMenuItem.Text = "Horizontal Tree ";
+            this.horToolStripMenuItem.Click += new System.EventHandler(this.horToolStripMenuItem_Click);
             // 
             // fileToolStripMenuItem
             // 
@@ -141,7 +153,7 @@
             this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.newToolStripMenuItem.Text = "&New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
@@ -151,14 +163,14 @@
             this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.openToolStripMenuItem.Text = "&Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // saveToolStripMenuItem
             // 
@@ -166,26 +178,26 @@
             this.saveToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveToolStripMenuItem.Text = "&Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.saveAsToolStripMenuItem.Text = "Save &As";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click_1);
             // 
             // toolStripSeparator4
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size(143, 6);
+            this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             // 
             // editToolStripMenuItem
@@ -333,6 +345,7 @@
             this.editor.ContextMenuStrip = this.contextMenuStrip1;
             this.editor.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.editor.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
+            this.editor.Font = new System.Drawing.Font("Courier New", 9.75F);
             this.editor.IsReplaceMode = false;
             this.editor.Language = FastColoredTextBoxNS.Language.XML;
             this.editor.LeftBracket = '<';
@@ -366,7 +379,7 @@
             this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.Color.Red;
-            this.button1.Location = new System.Drawing.Point(194, 2);
+            this.button1.Location = new System.Drawing.Point(188, 2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(93, 21);
             this.button1.TabIndex = 4;
@@ -420,7 +433,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(38, 15);
             this.label2.TabIndex = 8;
-            this.label2.Text = "CL : 0";
+            this.label2.Text = "CL : $";
             // 
             // label3
             // 
@@ -438,7 +451,7 @@
             // 
             this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(392, 2);
+            this.button5.Location = new System.Drawing.Point(396, 2);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(93, 21);
             this.button5.TabIndex = 10;
@@ -450,7 +463,7 @@
             // 
             this.button6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button6.Location = new System.Drawing.Point(491, 2);
+            this.button6.Location = new System.Drawing.Point(493, 2);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(93, 21);
             this.button6.TabIndex = 11;
@@ -462,11 +475,11 @@
             // 
             this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button7.Location = new System.Drawing.Point(293, 2);
+            this.button7.Location = new System.Drawing.Point(284, 2);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(93, 21);
+            this.button7.Size = new System.Drawing.Size(108, 21);
             this.button7.TabIndex = 12;
-            this.button7.Text = "Convert JSON";
+            this.button7.Text = "Convert -> JSON";
             this.button7.UseVisualStyleBackColor = true;
             // 
             // button8
@@ -479,6 +492,12 @@
             this.button8.TabIndex = 13;
             this.button8.Text = "Compress";
             this.button8.UseVisualStyleBackColor = true;
+            // 
+            // convertJSONToolStripMenuItem
+            // 
+            this.convertJSONToolStripMenuItem.Name = "convertJSONToolStripMenuItem";
+            this.convertJSONToolStripMenuItem.Size = new System.Drawing.Size(157, 22);
+            this.convertJSONToolStripMenuItem.Text = "Convert->JSON";
             // 
             // Form1
             // 
@@ -551,6 +570,8 @@
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.ToolStripMenuItem uglyFormatToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem horToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem convertJSONToolStripMenuItem;
     }
 }
 
