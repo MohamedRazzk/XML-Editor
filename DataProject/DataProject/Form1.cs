@@ -63,6 +63,7 @@ namespace DataProject
 
         }
 
+
         public void error_higliteer(int higlight)
         {
             //AllocConsole();
@@ -491,6 +492,7 @@ namespace DataProject
         {
             InitializeComponent();
         }
+
 
         private static DialogResult treedaialog(ref int input)
         {
