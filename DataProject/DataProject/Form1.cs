@@ -677,6 +677,7 @@ namespace DataProject
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            editor.Language = Language.XML;
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "XML File(.XML)|*.xml|All Files (*.*)|*.*";
             ofd.Title = "Open a Xml File ";
