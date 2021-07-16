@@ -66,11 +66,6 @@ namespace DataProject
         }
 
 
-
-
-
-  
-
   
         public  void comp_encoding( string input)
         {
@@ -86,9 +81,9 @@ namespace DataProject
 
             saving.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            saving.Filter = "Text Files (.bin)|*.bin|All Files (*.*)|*.*";
+            saving.Filter = "Encoded (.bin)|*.bin|All Files (*.*)|*.*";
             saving.Title = "Save As";
-            saving.FileName = "Untitled";
+            saving.FileName = "EncodedFile";
 
             if (saving.ShowDialog() == DialogResult.OK)
             {
@@ -104,7 +99,7 @@ namespace DataProject
 
             saving.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            saving.Filter = "Text Files (.bin)|*.bin|All Files (*.*)|*.*";
+            saving.Filter = "Table File  (.bin)|*.bin|All Files (*.*)|*.*";
             saving.Title = "Save As";
             saving.FileName = "Table";
 
@@ -152,8 +147,8 @@ namespace DataProject
             Dictionary<string, string> result = new Dictionary<string, string>();
 
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "XML File(.bin)|*.bin|All Files (*.*)|*.*";
-            ofd.Title = "Open a Xml File ";
+            ofd.Filter = "Encoded Filed(.bin)|*.bin|All Files (*.*)|*.*";
+            ofd.Title = "load the Encoded File ";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 bytes = File.ReadAllBytes(ofd.FileName);
@@ -161,8 +156,8 @@ namespace DataProject
             }
 
 
-            ofd.Filter = "XML File(.bin)|*.bin|All Files (*.*)|*.*";
-            ofd.Title = "Open a Xml File ";
+            ofd.Filter = "Table File(.bin)|*.bin|All Files (*.*)|*.*";
+            ofd.Title = "Load the table file ";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
 
@@ -386,19 +381,19 @@ namespace DataProject
 
 
 
-            AllocConsole();
-            Console.Clear();
+           // AllocConsole();
+           // Console.Clear();
 
 
-            Console.WriteLine(stack_error.Count);
-            for (int i = 0; i < stack_error.Count; i++)
-            {
-                Console.WriteLine(stack_error[i].line + "   " + stack_error[i].closer_checker + "   " + stack_error[i].word);
-            }
+           // Console.WriteLine(stack_error.Count);
+           // for (int i = 0; i < stack_error.Count; i++)
+           // {
+             //   Console.WriteLine(stack_error[i].line + "   " + stack_error[i].closer_checker + "   " + stack_error[i].word);
+           // }
 
 
 
-            Console.WriteLine("we are here ");
+           // Console.WriteLine("we are here ");
 
 
             for (int i = 0; i < stack_error.Count; i++)
@@ -437,7 +432,7 @@ namespace DataProject
 
             }
 
-
+            /*
 
             for (int i = 0;  i < linefixlevel.Count; i++)
            {
@@ -445,7 +440,7 @@ namespace DataProject
                 
             }
 
-            
+            */
 
             foreach (level_line_fixer obj in linefixlevel)
             {
@@ -937,8 +932,8 @@ namespace DataProject
                 MessageBox.Show("There is No Data to compress");
             }
             else
-            { 
-            comp_decoding();
+            {
+                comp_encoding(editor.Text);
             }
 
         }
