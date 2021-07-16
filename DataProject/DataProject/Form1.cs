@@ -12,6 +12,8 @@ using System.Windows.Forms;
 using FastColoredTextBoxNS;
 using Microsoft.VisualBasic;
 using System.Runtime.InteropServices;
+using System.Xml.Linq;
+using System.Xml;
 
 namespace DataProject
 {
@@ -29,13 +31,12 @@ namespace DataProject
 
         Stack checking_stack = new Stack();
         Stack leveling_stack = new Stack();
-       
+
 
         private string FileName = string.Empty;
 
         int est = 0;
-        string treebuilder  =  "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!()*+,-./:;<=>?@[\\]^_`{|}~ \t\n\r\x0b\x0c";
-
+       
         List<error_handler> error = new List<error_handler>();
         List<line_handler> stack_error = new List<line_handler>();
         List<level_line_fixer> linefixlevel = new List<level_line_fixer>();
@@ -53,7 +54,7 @@ namespace DataProject
         {
             public int line ,start,end;
             public bool type;
-            public string fixer;
+            public string fixe;
 
         }
 
@@ -64,63 +65,138 @@ namespace DataProject
 
         }
 
-     
 
-        public  string comp_encoding( string input)
+
+
+
+  
+
+  
+        public  void comp_encoding( string input)
         {
 
-            input = Convert.ToString(input);
             HuffmanComp huffmanTree = new HuffmanComp();
-
-          
-            huffmanTree.Build(treebuilder);
+            input = Convert.ToString(input);
+ 
+            huffmanTree.Build(input);
 
             BitArray encoded = huffmanTree.Encode(input);
 
-            var sb = new StringBuilder();
+            SaveFileDialog saving = new SaveFileDialog();
 
-            for (int i = 0; i < encoded.Count; i++)
+            saving.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            saving.Filter = "Text Files (.bin)|*.bin|All Files (*.*)|*.*";
+            saving.Title = "Save As";
+            saving.FileName = "Untitled";
+
+            if (saving.ShowDialog() == DialogResult.OK)
             {
-                char c = encoded[i] ? '1' : '0';
-                sb.Append(c);
+                this.FileName = saving.FileName;
+
+                byte[] bytes = new byte[encoded.Length / 8 + (encoded.Length % 8 == 0 ? 0 : 1)];
+                encoded.CopyTo(bytes, 0);
+
+                System.IO.File.WriteAllBytes(this.FileName, bytes);
+                
+
             }
-            
-            string enc_sting = sb.ToString();
 
-            /*
+            saving.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-            string deco_text = enc_sting;
-            var bit_arr = new BitArray(deco_text.Select(c => c == '1').ToArray());
+            saving.Filter = "Text Files (.bin)|*.bin|All Files (*.*)|*.*";
+            saving.Title = "Save As";
+            saving.FileName = "Table";
 
-            string decoded = huffmanTree.Decode(bit_arr);
-            */
+            if (saving.ShowDialog() == DialogResult.OK)
+            {
+                this.FileName = saving.FileName;
 
+               using (StreamWriter file = new StreamWriter(this.FileName))
+                   foreach (var entry in huffmanTree.Frequencies)
+                    {
+                        if (entry.Key == '\n' )
+                        {
+                            file.WriteLine("{0} {1}", "\\n", entry.Value);
+                        }
 
-           // Console.WriteLine(enc_sting);
+                        else if (entry.Key == '\r')
+                        {
+                            file.WriteLine("{0} {1}", "\\r", entry.Value);
+                        }
+                        else if (entry.Key == ' ')
+                        {
+                            file.WriteLine("{0} {1}", "\\s", entry.Value);
+                        }
 
-            return enc_sting;
-
+                        else
+                        {
+                            file.WriteLine("{0} {1}", entry.Key, entry.Value);
+                        }
+                    }
+                    
+            }
 
         }
 
 
-        public string comp_decoding( string input)
+        public void comp_decoding()
         {
-            input = Convert.ToString(input);
 
             HuffmanComp huffmanTree = new HuffmanComp();
-          
-            huffmanTree.Build(treebuilder);
-            string deco_text = input;
-            var bit_arr = new BitArray(deco_text.Select(c => c == '1').ToArray());
+         
 
-            string decoded = huffmanTree.Decode(bit_arr);
+            AllocConsole();
 
-            return decoded;
+            byte[] bytes = null;
+            Dictionary<string, string> result = new Dictionary<string, string>();
 
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.Filter = "XML File(.bin)|*.bin|All Files (*.*)|*.*";
+            ofd.Title = "Open a Xml File ";
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                bytes = File.ReadAllBytes(ofd.FileName);
+
+            }
+
+
+            ofd.Filter = "XML File(.bin)|*.bin|All Files (*.*)|*.*";
+            ofd.Title = "Open a Xml File ";
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+
+                 result = File.ReadAllLines(ofd.FileName)
+                                           .Select(x => x.Split(' '))
+                                           .ToDictionary(x => x[0], x => x[1]);
+
+            }
+            
+
+
+            foreach (KeyValuePair<string, string> value in result)
+            {
+                if (value.Key == "\\n")  {huffmanTree.Frequencies.Add('\n', Convert.ToInt32(value.Value)); }
+
+                else if (value.Key == "\\r") { huffmanTree.Frequencies.Add('\r', Convert.ToInt32(value.Value));}
+
+                else if (value.Key == "\\s") { huffmanTree.Frequencies.Add(' ', Convert.ToInt32(value.Value));}
+
+                else { huffmanTree.Frequencies.Add((value.Key).ToCharArray()[0], Convert.ToInt32(value.Value)); }
+            }
+
+           
+            huffmanTree.rebuild();
+
+            BitArray bits = new BitArray(bytes);
+
+            string decoded = huffmanTree.Decode(bits);            
+            Console.WriteLine(decoded);
+
+            editor.Text = decoded;
+ 
     
         }
-
 
 
         public void error_higliteer(int higlight)
@@ -803,28 +879,27 @@ namespace DataProject
 
         private void button4_Click(object sender, EventArgs e)
         {
-            AllocConsole();
-           
-            if (error[est].type == false)
+            if (error.Count == 0)
             {
-                syntax_fixer();
+                MessageBox.Show("there is no errors ");
             }
             else
             {
-                level_fixer();
+                if (error[est].type == false)
+                {
+                    syntax_fixer();
+                }
+                else
+                {
+                    level_fixer();
+                }
+                label1.Text = "Total Errors : " + error.Count.ToString();
+                label2.Text = "CL : $";
+                label3.Text = "ET : Null";
+                error.RemoveAt(est);
+                button2_Click(sender, e);
             }
-            label1.Text = "Total Errors : " + error.Count.ToString();
-            label2.Text = "CL : $";
-            label3.Text = "ET : Null";
-            error.RemoveAt(est);
-            button2_Click(sender, e);
-            
 
-
-
-
-
-            //Console.WriteLine(error[est].line+1);
 
 
 
@@ -854,38 +929,52 @@ namespace DataProject
             puttify(tree_space);
         }
 
-        private void button8_Click(object sender, EventArgs e)
-        {
-            AllocConsole();
-            string zero = "zeroman";
-             //Console.WriteLine( comp_encoding(zero));
-
-            string encode = comp_encoding(zero);
-           Console.WriteLine(encode);
-
-            string decode = comp_decoding(encode);
-            Console.WriteLine(decode);
-
-            //string toty = comp_decoding (encode);
-            //Console.WriteLine(toolsToolStripMenuItem);
-
-        }
-
-       
 
         private void compressToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AllocConsole();
-            RichTextBox tempRtb = new RichTextBox();
-            tempRtb.Text = editor.Text;
+            if (editor.Text=="")
+            {
+                MessageBox.Show("There is No Data to compress");
+            }
+            else
+            { 
+            comp_decoding();
+            }
 
+        }
 
-            Console.WriteLine(tempRtb.Lines[0]);
+        private void compressToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            compressToolStripMenuItem_Click(sender, e);
+        }
 
+        private void openCompressionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            openCompressedFileToolStripMenuItem_Click(sender, e);
+        }
 
+        private void openCompressedFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            comp_decoding();
+        }
 
+        private void button7_Click(object sender, EventArgs e)
+        {
+            editor.Language = Language.JSON;
+            string testcase = editor.Text;
 
+            var Main_class_inst = new xml_cov();
+            TagTreeNode N = Main_class_inst.Parse_xml(testcase);
+            JsonTree X = new JsonTree(N);
+            string z = Main_class_inst.GenerateJSONx(X);
 
+            editor.Text = z;
+        }
+
+      
+        private void convertJSONToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            button7_Click(sender, e);
         }
     }
 

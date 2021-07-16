@@ -59,6 +59,47 @@ namespace DataProject
 
         }
 
+
+
+        public void rebuild()
+        {
+            
+            foreach (KeyValuePair<char, int> symbol in Frequencies)
+            {
+                nodes.Add(new CompNode() { Symbol = symbol.Key, Frequency = symbol.Value });
+            }
+
+            while (nodes.Count > 1)
+            {
+                List<CompNode> orderedNodes = nodes.OrderBy(node => node.Frequency).ToList<CompNode>();
+
+                if (orderedNodes.Count >= 2)
+                {
+                    // Take first two items
+                    List<CompNode> taken = orderedNodes.Take(2).ToList<CompNode>();
+
+                    // Create a parent node by combining the frequencies
+                    CompNode parent = new CompNode()
+                    {
+                        Symbol = '*',
+                        Frequency = taken[0].Frequency + taken[1].Frequency,
+                        Left = taken[0],
+                        Right = taken[1]
+                    };
+
+                    nodes.Remove(taken[0]);
+                    nodes.Remove(taken[1]);
+                    nodes.Add(parent);
+                }
+
+                this.Root = nodes.FirstOrDefault();
+
+            }
+
+        }
+
+
+
         public BitArray Encode(string source)
         {
             List<bool> encodedSource = new List<bool>();
