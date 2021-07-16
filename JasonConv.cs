@@ -45,7 +45,7 @@ namespace DataProject
                         if (tag[tag.Length - 1] == '/')
                         {
                             is_self_closing = true;
-                            tag.Remove(tag.Length - 1);
+                            tag = tag.Remove(tag.Length - 1);
                         }
                         else { is_self_closing = false; }
                         if (tag[0] != '/')
