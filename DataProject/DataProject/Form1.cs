@@ -141,7 +141,7 @@ namespace DataProject
             HuffmanComp huffmanTree = new HuffmanComp();
          
 
-            AllocConsole();
+         //   AllocConsole();
 
             byte[] bytes = null;
             Dictionary<string, string> result = new Dictionary<string, string>();
@@ -186,7 +186,7 @@ namespace DataProject
             BitArray bits = new BitArray(bytes);
 
             string decoded = huffmanTree.Decode(bits);            
-            Console.WriteLine(decoded);
+           // Console.WriteLine(decoded);
 
             editor.Text = decoded;
  
