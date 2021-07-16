@@ -9,12 +9,6 @@ namespace DataProject
 {
     class xml_cov
     {
-        // Problems with  this function:
-        /* This Function still cannot ignore XML versioning and comments
-         * This Function also needs to be supplied XML attributes without spaces
-         * Both of these problems have been fixed
-         * To make this code stable it must be developed using state machines.
-         */
         public TagTreeNode Parse_xml(string in_str)
         {
             TagTreeNode curr_node = null;
@@ -47,6 +41,13 @@ namespace DataProject
                         string tag = null;
                         for (i++; (i < in_str.Length) && (in_str[i] != '>'); i++)
                             tag += in_str[i];
+                        bool is_self_closing;
+                        if (tag[tag.Length - 1] == '/')
+                        {
+                            is_self_closing = true;
+                            tag.Remove(tag.Length - 1);
+                        }
+                        else { is_self_closing = false; }
                         if (tag[0] != '/')
                         {
                             List<string> tag_info = new List<string>();
@@ -81,7 +82,6 @@ namespace DataProject
                             if (TagData != "")
                                 tag_info.Add(TagData);
                             TagData = "";
-                            // new List<string>(tag.Split(' '));
                             TagTreeNode Child_node = new TagTreeNode();
                             Child_node.Parent = curr_node;
                             if (curr_node != null)
@@ -93,6 +93,10 @@ namespace DataProject
                                 string[] key_val_pair = tag_info[j].Split('=');
                                 (string key, string val) KV = (key_val_pair[0], key_val_pair[1]);
                                 curr_node.Properties.Add(KV);
+                            }
+                            if (is_self_closing == true)
+                            {
+                                curr_node = curr_node.Parent;
                             }
                         }
                         else
@@ -165,7 +169,7 @@ namespace DataProject
 
         static void Main(string[] args)
         {
-            string testcase = 
+            string testcase =
                 System.IO.File.ReadAllText
                 (@"D:\Ahmed Genina\Documents\3rd CSE 2nd Semester\Programming With Data Structures\proj\xml2json\xmltest2.txt");
             // Put your XML string above.
